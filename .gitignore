@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -143,4 +142,4 @@ htmlcov/
 dist/
 build/
 *.egg-info/
->>>>>>> 1ef9bb0 (initial commit)
+

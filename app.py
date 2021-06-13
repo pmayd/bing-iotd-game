@@ -54,7 +54,7 @@ def register():
 
         if error is None:
             db.add_user(username, score)
-            #return redirect(url_for('login'))
+            return redirect(url_for('index'))
         else:
             flash(error)
 
@@ -67,7 +67,7 @@ def login():
         username = request.form['username']
         error = None
 
-        if not db.get_user(username):
+        if not db.user_exists(username):
             error = 'Incorrect username.'
 
         if error is None:

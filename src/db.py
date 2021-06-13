@@ -1,5 +1,6 @@
-from pathlib import Path
 import json
+from functools import wraps
+from pathlib import Path
 
 DB_PATH = "db.json"
 
@@ -13,16 +14,24 @@ def get_db() -> dict:
         return json.load(fhandle)
 
 
+def save_db(func):
+    """ Store db. """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        db = func(*args, **kwargs)
+        
+        with open(DB_PATH, "w", encoding="utf-8") as fhandle:
+            json.dump(db, fhandle)
+    
+    return wrapper
+
+
+@save_db
 def create_new_db():
     """ Create a new empty database. """
     db = {"user": {}, "challenge": {}}
-    save_db(db)
-        
-
-def save_db(db: dict):
-    """ Store db. """
-    with open(DB_PATH, "w", encoding="utf-8") as fhandle:
-        json.dump(db, fhandle)
+    
+    return db
 
 
 def get_usernames() -> list[str]:
@@ -39,31 +48,33 @@ def user_exists(username: str) -> bool:
 
 def get_user(username: str) -> dict:
     """ Get user data from database. """
-    return get_db()["user"].get(username, {})
+    db = get_db()
+    return db["user"].get(username, {})
 
 
+@save_db
 def add_user(username: str, score: int):
     """ Add new user to database. """
     db = get_db()
     db["user"][username] = {}
     db["user"][username]["score"] = score
     
-    save_db(db)
-    
+    return db
 
+    
+@save_db
 def add_score(username: str, score: int):
     """ Add score to user score. """
     db = get_db()
     db["user"][username]["score"] += score
-    
-    save_db(db)
 
+    return db
 
+@save_db
 def add_guess(image_date: str, username: str, country: str):
     """ Add user's first guess to today's challenge. """
     db = get_db()
-    
     db["challenge"].setdefault(image_date, {})
     db["challenge"][image_date].setdefault(username, country)
-    
-    save_db(db)
+
+    return db
