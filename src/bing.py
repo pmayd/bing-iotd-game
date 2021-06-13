@@ -7,6 +7,8 @@ BING_DAILY_IMAGE = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1
 
 
 def get_bing_daily_pic() -> dict:
+    """ Retrieve metadata for Image of the Day. """
+    # TODO: cache!
     response = requests.get(BING_DAILY_IMAGE)
     response.raise_for_status()
     image_metadata = response.json()["images"][0]
@@ -43,6 +45,18 @@ def get_image_country() -> str:
     return country
 
 
+def get_image_author() -> str:
+    """ Return image author from copyright metadata. """
+    metadata = get_bing_daily_pic()
+    author = ""
+    copyright = metadata["copyright"]
+    
+    if copyright.find("©") != -1:
+        author = copyright[copyright.find("©")+1:-1].strip()
+    
+    return author
+    
+    
 def score_guess(country: str) -> float:
     """ Calculate distance from guess to image location. """
     ...

@@ -1,17 +1,16 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block content %}
 
-{% block header %}
-  <h2>{% block title %}Today's challenge{% endblock %}</h2>
-
-  <p>Image for {{ today }}.</p>
-{% endblock %}
-
-{% block content %}
-  <img src='{{image_url}}'>
-
-  <form method="post">
-    <label for="country">Country</label>
-    <input name="country" id="country" required>
-    <input type="submit" value="Submit guess">
-  </form>
+<figure class="figure">
+    <img src='{{image_url}}' class="figure-img img-fluid rounded" alt="BIng Image of the Day">
+    <figcaption class="figure-caption text-end">Image for {{image_date}}: {{ image_author }}.</figcaption>
+</figure>
+<form method="post">
+    <div class="mb-3 row g-2">
+        <div class="col-3">
+            <label class="form-label" for="country">Country</label>
+            <input class="form-control" name="country" id="country" required>
+        </div>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit guess</button>
+</form>
 {% endblock %}

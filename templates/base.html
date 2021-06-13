@@ -1,25 +1,55 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - Where on Earth is this?</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<nav>
-  <h1><a href="/">Where on Earth is this?</a></h1>
-  <ul>
-    {% if g.user %}
-      <li><a href="{{ url_for('challenge') }}">Today's challenge</span>
-    {% else %}
-      <li><a href="{{ url_for('register') }}">Register</a>
-      <li><a href="{{ url_for('login') }}">Log In</a>
-    {% endif %}
-  </ul>
-</nav>
-<section class="content">
-  {% if self.header() %}
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% endif %}
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <!-- APP CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <title>{% block title %}{% endblock %} - Where on Earth is this?</title>
+</head>
+
+<body class="container-fluid">
+    <div class="container">
+        <div class="row align-items-center">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/">Where on Earth is this?</a>
+
+                    <ul class="navbar-nav justify-content-end">
+                        {% if g.user %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('challenge') }}">Today's challenge</a></li>
+                        {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Register</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Log In</a></li> {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="row py-3 bg-light">
+            <div class="content">
+                {% for message in get_flashed_messages() %}
+                <div class="alert alert-warning" role="alert">{{ message }}</div>
+                {% endfor %} {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+    -->
+</body>
+
+</html>

@@ -4,7 +4,7 @@ from datetime import date
 from flask import (Flask, flash, g, redirect, render_template, request,
                    session, url_for)
 
-from src import bing, db, user
+from src import bing, db
 
 BING_URL = "https://www.bing.com"
 BING_DAILY_IMAGE = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=de-de"
@@ -64,7 +64,6 @@ def challenge():
         flash("You are not logged in as a user. Please login first!") 
         return redirect(url_for("login"))
     
-    image_date = bing.get_image_startdate()
     if request.method == 'POST':
         country = request.form["country"]
         error = None
@@ -73,8 +72,8 @@ def challenge():
             error ="Country is required."
             
         if error is None:
-            db.add_guess(image_date, session["user"], country)
+            db.add_guess(session["user"], country)
         else:
             flash(error)
         
-    return render_template("challenge.html", image_url=bing.get_image_url(), today=image_date)
+    return render_template("challenge.html", image_url=bing.get_image_url(), image_date=bing.get_image_startdate(), image_author=bing.get_image_author())

@@ -2,6 +2,8 @@ import json
 from functools import wraps
 from pathlib import Path
 
+from . import bing
+
 DB_PATH = "db.json"
 
 
@@ -83,9 +85,11 @@ def add_score(username: str, score: int, db):
 
 @update_db
 @provide_db
-def add_guess(image_date: str, username: str, country: str, db):
+def add_guess(username: str, country: str, db):
     """ Add user's first guess to today's challenge. """
+    image_date = bing.get_image_startdate()
     db["challenge"].setdefault(image_date, {})
     db["challenge"][image_date].setdefault(username, country)
-
+    # TODO add distance for country so we do not have to calcualte it each time
+        
     return db
