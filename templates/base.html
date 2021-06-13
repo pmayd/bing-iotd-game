@@ -1,0 +1,25 @@
+<!doctype html>
+<title>{% block title %}{% endblock %} - Where on Earth is this?</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<nav>
+  <h1><a href="/">Where on Earth is this?</a></h1>
+  <ul>
+    {% if g.user %}
+      <li><a href="{{ url_for('challenge') }}">Today's challenge</span>
+    {% else %}
+      <li><a href="{{ url_for('register') }}">Register</a>
+      <li><a href="{{ url_for('login') }}">Log In</a>
+    {% endif %}
+  </ul>
+</nav>
+<section class="content">
+  {% if self.header() %}
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+  {% endif %}
+  {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</section>
