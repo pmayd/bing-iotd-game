@@ -6,7 +6,6 @@ DB_PATH = "db.json"
 
 
 def get_db() -> dict:
-    """ Load database. """
     if not Path(DB_PATH).exists():
         create_new_db()
 
@@ -14,7 +13,18 @@ def get_db() -> dict:
         return json.load(fhandle)
 
 
-def save_db(func):
+def provide_db(func):
+    """ Load database. """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        db = get_db()
+
+        return func(*args, db=db, **kwargs)
+        
+    return wrapper
+
+
+def update_db(func):
     """ Store db. """
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -26,7 +36,7 @@ def save_db(func):
     return wrapper
 
 
-@save_db
+@update_db
 def create_new_db():
     """ Create a new empty database. """
     db = {"user": {}, "challenge": {}}
@@ -34,46 +44,47 @@ def create_new_db():
     return db
 
 
-def get_usernames() -> list[str]:
+@provide_db
+def get_usernames(db) -> list[str]:
     """ Return a list of all registered user names. """
-    db = get_db()
     return list(db["user"].keys())
 
 
-def user_exists(username: str) -> bool:
+@provide_db
+def user_exists(username: str, db) -> bool:
     """ Check if user already exists. """
-    db = get_db()
     return username in db["user"]
 
 
-def get_user(username: str) -> dict:
+@provide_db
+def get_user(username: str, db) -> dict:
     """ Get user data from database. """
-    db = get_db()
     return db["user"].get(username, {})
 
 
-@save_db
-def add_user(username: str, score: int):
+@update_db
+@provide_db
+def add_user(username: str, score: int, db):
     """ Add new user to database. """
-    db = get_db()
     db["user"][username] = {}
     db["user"][username]["score"] = score
-    
+
     return db
 
-    
-@save_db
-def add_score(username: str, score: int):
+
+@update_db
+@provide_db
+def add_score(username: str, score: int, db):
     """ Add score to user score. """
-    db = get_db()
     db["user"][username]["score"] += score
 
     return db
 
-@save_db
-def add_guess(image_date: str, username: str, country: str):
+
+@update_db
+@provide_db
+def add_guess(image_date: str, username: str, country: str, db):
     """ Add user's first guess to today's challenge. """
-    db = get_db()
     db["challenge"].setdefault(image_date, {})
     db["challenge"][image_date].setdefault(username, country)
 
