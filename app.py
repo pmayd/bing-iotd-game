@@ -17,28 +17,6 @@ def index():
     return render_template("index.html", username=session.get("user"))
 
 
-@app.route("/challenge", methods=('GET', 'POST'))
-def challenge():
-    if session.get("user") is None:
-        flash("You are not logged in as a user. Please login first!") 
-        return redirect(url_for("login"))
-    
-    image_date = bing.get_image_startdate()
-    if request.method == 'POST':
-        country = request.form["country"]
-        error = None
-    
-        if not country:
-            error ="Country is required."
-            
-        if error is None:
-            db.add_guess(image_date, session["user"], country)
-        else:
-            flash(error)
-        
-    return render_template("challenge.html", image_url=bing.get_image_url(), today=image_date)
-
-
 @app.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
@@ -78,3 +56,25 @@ def login():
         flash(error)
 
     return render_template('login.html')
+
+
+@app.route("/challenge", methods=('GET', 'POST'))
+def challenge():
+    if session.get("user") is None:
+        flash("You are not logged in as a user. Please login first!") 
+        return redirect(url_for("login"))
+    
+    image_date = bing.get_image_startdate()
+    if request.method == 'POST':
+        country = request.form["country"]
+        error = None
+    
+        if not country:
+            error ="Country is required."
+            
+        if error is None:
+            db.add_guess(image_date, session["user"], country)
+        else:
+            flash(error)
+        
+    return render_template("challenge.html", image_url=bing.get_image_url(), today=image_date)
