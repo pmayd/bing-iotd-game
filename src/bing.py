@@ -82,7 +82,8 @@ def score_guess(user_country: str, bing_country: str) -> float:
     bing_location = geolocator.geocode(bing_country)
     distance = geodesic(
         (user_location.latitude, user_location.longitude),
-        (bing_location.latitude, bing_location.longitude)).km
+        (bing_location.latitude, bing_location.longitude)
+    ).km
     return round(distance)
 
 
