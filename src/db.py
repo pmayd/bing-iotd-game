@@ -87,9 +87,15 @@ def add_score(username: str, score: int, db):
 @provide_db
 def add_guess(username: str, country: str, db):
     """ Add user's first guess to today's challenge. """
-    image_date = bing.get_image_startdate()
+    image_date = bing.get_image_date()
     db["challenge"].setdefault(image_date, {})
     db["challenge"][image_date].setdefault(username, country)
     # TODO add distance for country so we do not have to calcualte it each time
         
     return db
+
+
+@provide_db
+def get_challenge(db, image_date: str = bing.get_image_date()) -> dict:
+    """ Get the challenge for the given date. """
+    return db["challenge"].get(image_date, {})

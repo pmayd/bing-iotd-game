@@ -74,6 +74,15 @@ def challenge():
             flash(error)
 
     return render_template("challenge.html",
+                           challenge=db.get_challenge(),
                            image_url=bing.get_image_url(),
                            image_date=bing.get_image_date(),
                            image_author=bing.get_image_author())
+
+@app.route("/score", methods=('GET', 'POST'))
+def score():
+    if session.get("user") is None:
+        flash("You are not logged in as a user. Please login first!")
+        return redirect(url_for("login"))
+    
+    return render_template("score.html", challenge=db.get_challenge())

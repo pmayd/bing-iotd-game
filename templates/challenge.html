@@ -4,6 +4,9 @@
     <img src='{{image_url}}' class="figure-img img-fluid rounded" alt="BIng Image of the Day">
     <figcaption class="figure-caption text-end">Image for {{image_date}}: {{ image_author }}.</figcaption>
 </figure>
+{% if session.user in challenge %}
+<p> You have already taken part in today's challenge. Your guess was <strong class="text-primary">{{ challenge[session.user] }}</strong>.</p>
+{% else %}
 <form method="post">
     <div class="mb-3 row g-2">
         <div class="col-3">
@@ -13,4 +16,5 @@
     </div>
     <button class="btn btn-primary" type="submit">Submit guess</button>
 </form>
+{% endif %}
 {% endblock %}

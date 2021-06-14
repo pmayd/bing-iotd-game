@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block content %}
+
+{% if challenge %}
+<p> The following players have already submitted their guesses:</p>
+
+<div class="list-group w-50">
+{% for player, guess in challenge.items() %}
+      <div class="list-group-item justify-content-between">
+        <h5 class="mb-1">{{ player }}</h5>
+        <small>{{ guess }}</small>
+      </div>
+{% endfor %}
+</div>
+
+<form method="post" class="mt-3">
+    <button class="btn btn-primary" type="submit">Submit guesses</button>
+</form>
+
+</div>
+{% else %}
+
+<p> There are no players yet for today's challenge. </p>
+
+{% endif %}
+{% endblock %}
