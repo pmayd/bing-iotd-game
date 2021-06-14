@@ -1,6 +1,8 @@
 import json
 from datetime import datetime
 from pathlib import Path
+from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
 
 import requests
 
@@ -73,7 +75,15 @@ def get_image_author() -> str:
     return author
 
 
-def score_guess(country: str) -> float:
+def score_guess(user_country: str, bing_country: str) -> float:
     """ Calculate distance from guess to image location. """
-    ...
-    return 0.0
+    geolocator = Nominatim(user_agent="Bing IOTD Challenge")
+    user_location = geolocator.geocode(user_country)
+    bing_location = geolocator.geocode(bing_country)
+    distance = geodesic(
+        (user_location.latitude, user_location.longitude),
+        (bing_location.latitude, bing_location.longitude)
+    ).km
+    return round(distance)
+
+
