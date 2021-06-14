@@ -80,9 +80,9 @@ def score_guess(user_country: str, bing_country: str) -> float:
     geolocator = Nominatim(user_agent="Bing IOTD Challenge")
     user_location = geolocator.geocode(user_country)
     bing_location = geolocator.geocode(bing_country)
-    return round(geodesic(
+    distance = geodesic(
         (user_location.latitude, user_location.longitude),
-        (bing_location.latitude, bing_location.longitude)).km,
-        2)
+        (bing_location.latitude, bing_location.longitude)).km
+    return round(distance)
 
 
