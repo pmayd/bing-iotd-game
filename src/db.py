@@ -47,26 +47,26 @@ def create_new_db():
 
 
 @provide_db
-def get_usernames(db) -> list[str]:
+def get_usernames(db = None) -> list[str]:
     """ Return a list of all registered user names. """
     return list(db["user"].keys())
 
 
 @provide_db
-def user_exists(username: str, db) -> bool:
+def user_exists(username: str, db = None) -> bool:
     """ Check if user already exists. """
     return username in db["user"]
 
 
 @provide_db
-def get_user(username: str, db) -> dict:
+def get_user(username: str, db = None) -> dict:
     """ Get user data from database. """
     return db["user"].get(username, {})
 
 
 @update_db
 @provide_db
-def add_user(username: str, score: int, db):
+def add_user(username: str, score: int, db = None):
     """ Add new user to database. """
     db["user"][username] = {}
     db["user"][username]["score"] = score
@@ -76,7 +76,7 @@ def add_user(username: str, score: int, db):
 
 @update_db
 @provide_db
-def add_score(username: str, score: int, db):
+def add_score(username: str, score: int, db = None):
     """ Add score to user score. """
     db["user"][username]["score"] += score
 
@@ -85,7 +85,7 @@ def add_score(username: str, score: int, db):
 
 @update_db
 @provide_db
-def add_guess(username: str, country: str, db):
+def add_guess(username: str, country: str, db = None):
     """ Add user's first guess to today's challenge. """
     image_date = bing.get_image_date()
     db["challenge"].setdefault(image_date, {})
@@ -96,6 +96,6 @@ def add_guess(username: str, country: str, db):
 
 
 @provide_db
-def get_challenge(db, image_date: str = bing.get_image_date()) -> dict:
+def get_challenge(image_date: str = bing.get_image_date(), db = None) -> dict:
     """ Get the challenge for the given date. """
     return db["challenge"].get(image_date, {})
