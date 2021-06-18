@@ -3,6 +3,10 @@
 {% if "player" in challenge %}
   <p> The following players have already submitted their guesses:</p>
 
+  {% if challenge.status == "finished" %}
+  <p>The correct solution is <strong class="text-primary">{{ challenge["country"] }}</strong>.</p>
+  {% endif %}
+
   <div class="list-group w-50">
   {% for player, item in challenge.player.items() %}
         <div class="list-group-item justify-content-between">
