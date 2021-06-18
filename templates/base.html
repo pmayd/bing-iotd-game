@@ -22,9 +22,11 @@
                     <a class="navbar-brand" href="/">Where on Earth is this?</a>
 
                     <ul class="navbar-nav justify-content-end">
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('highscore') }}">Leaderboard</a></li>
                         {% if session.user %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('score') }}">Score</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('challenge') }}">Today's challenge</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Log Out</a></li>
                         {% else %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Register</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Log In</a></li> {% endif %}

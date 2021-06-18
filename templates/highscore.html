@@ -1,0 +1,13 @@
+{% extends 'base.html' %} {% block content %}
+
+
+  <div class="list-group w-50">
+  {% for player, item in player.items() %}
+        <div class="list-group-item justify-content-between">
+          <h5 class="mb-1">{{ player }}</h5>
+          <small>Score: {{ item.score }}</small><br>
+        </div>
+  {% endfor %}
+  </div>
+
+{% endblock %}

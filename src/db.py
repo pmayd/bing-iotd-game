@@ -22,7 +22,7 @@ def provide_db(func):
         db = get_db()
 
         return func(*args, db=db, **kwargs)
-        
+
     return wrapper
 
 
@@ -31,10 +31,10 @@ def update_db(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         db = func(*args, **kwargs)
-        
+
         with open(DB_PATH, "w", encoding="utf-8") as fhandle:
             json.dump(db, fhandle)
-    
+
     return wrapper
 
 
@@ -42,31 +42,34 @@ def update_db(func):
 def create_new_db():
     """ Create a new empty database. """
     db = {"user": {}, "challenge": {}}
-    
+
     return db
 
 
 @provide_db
-def get_usernames(db = None) -> list[str]:
+def get_usernames(db=None) -> list[str]:
     """ Return a list of all registered user names. """
     return list(db["user"].keys())
 
 
 @provide_db
-def user_exists(username: str, db = None) -> bool:
+def user_exists(username: str, db=None) -> bool:
     """ Check if user already exists. """
     return username in db["user"]
 
 
 @provide_db
-def get_user(username: str, db = None) -> dict:
+def get_user(username: str=None, db=None) -> dict:
     """ Get user data from database. """
-    return db["user"].get(username, {})
+    if username:
+        return db["user"].get(username, {})
+    else:
+        return db["user"]
 
 
 @update_db
 @provide_db
-def add_user(username: str, score: int, db = None):
+def add_user(username: str, score: int, db=None):
     """ Add new user to database. """
     db["user"][username] = {}
     db["user"][username]["score"] = score
@@ -76,26 +79,59 @@ def add_user(username: str, score: int, db = None):
 
 @update_db
 @provide_db
-def add_score(username: str, score: int, db = None):
-    """ Add score to user score. """
-    db["user"][username]["score"] += score
-
+def update_player_score(db=None):
+    """ Update all player scores with today's challenge score. """
+    image_date = bing.get_image_date()
+    if db["challenge"][image_date].get("status", "") == "finished":   
+        player = db["challenge"][image_date]["player"]
+        
+        for username, stats in player.items():
+            db["user"][username]["score"] += stats["score"]
+            
     return db
 
 
 @update_db
 @provide_db
-def add_guess(username: str, country: str, db = None):
+def add_guess(username: str, user_country: str, db=None):
     """ Add user's first guess to today's challenge. """
     image_date = bing.get_image_date()
+    image_country = bing.get_image_country()
     db["challenge"].setdefault(image_date, {})
-    db["challenge"][image_date].setdefault(username, country)
-    # TODO add distance for country so we do not have to calcualte it each time
-        
+    db["challenge"][image_date].setdefault("country", image_country)
+    db["challenge"][image_date].setdefault("status", "open")
+    db["challenge"][image_date].setdefault("player", {})
+    db["challenge"][image_date]["player"].setdefault(
+        username, {
+            "guess": user_country,
+            "distance": bing.score_guess(user_country, image_country)
+        })
+
     return db
 
-
 @provide_db
-def get_challenge(image_date: str = bing.get_image_date(), db = None) -> dict:
+@update_db
+def score_guesses(db=None):
+    """ Score all player's guesses
+    
+    First, all players are ranked by their guess distance
+    Second, the best three playes get scores 3,2,1
+    Third, challenge's status is set to 'finished
+    """
+    image_date = bing.get_image_date()
+    players_and_scores = sorted(db["challenge"][image_date]["player"].items(), key=lambda x: x[1]["distance"])
+    
+    score = 3
+    for username, _ in players_and_scores:
+        db["challenge"][image_date]["player"][username].setdefault("score", score)
+        score = max(score -1, 0)
+    
+    db["challenge"][image_date]["status"] = "finished"
+    
+    return db
+        
+    
+@provide_db
+def get_challenge(image_date: str = bing.get_image_date(), db=None) -> dict:
     """ Get the challenge for the given date. """
     return db["challenge"].get(image_date, {})
