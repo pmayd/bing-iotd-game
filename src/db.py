@@ -1,6 +1,7 @@
 import json
 from functools import wraps
 from pathlib import Path
+from typing import List
 
 from . import bing
 
@@ -47,7 +48,7 @@ def create_new_db():
 
 
 @provide_db
-def get_usernames(db=None) -> list[str]:
+def get_usernames(db=None) -> List[str]:
     """ Return a list of all registered user names. """
     return list(db["user"].keys())
 
