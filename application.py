@@ -106,3 +106,9 @@ def highscore():
     user = db.get_user()
     user = dict(sorted(user.items(), key=lambda x: x[1]["score"], reverse=True))
     return render_template("highscore.html", player=user)
+
+
+# needed when running the flask app via python app.py and not via flask run
+if __name__ == "__main__":
+    app.debug = True
+    app.run()
