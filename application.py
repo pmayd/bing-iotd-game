@@ -5,16 +5,16 @@ from flask import (Flask, flash, redirect, render_template, request, session,
 
 from src import bing, db
 
-app = Flask(__name__)
-app.config.from_mapping(SECRET_KEY=os.urandom(16))
+application = Flask(__name__)
+application.config.from_mapping(SECRET_KEY=os.urandom(16))
 
 
-@app.route("/")
+@application.route("/")
 def index():
     return render_template("index.html", username=session.get("user"))
 
 
-@app.route('/register', methods=('GET', 'POST'))
+@application.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -36,7 +36,7 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/login', methods=('GET', 'POST'))
+@application.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -55,14 +55,14 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/logout')
+@application.route('/logout')
 def logout():
     session.clear()
            
     return redirect(url_for('index'))
 
 
-@app.route("/challenge", methods=('GET', 'POST'))
+@application.route("/challenge", methods=('GET', 'POST'))
 def challenge():
     if session.get("user") is None:
         flash("You are not logged in as a user. Please login first!")
@@ -87,7 +87,7 @@ def challenge():
                            image_author=bing.get_image_author())
 
 
-@app.route("/score", methods=('GET', 'POST'))
+@application.route("/score", methods=('GET', 'POST'))
 def score():
     if session.get("user") is None:
         flash("You are not logged in as a user. Please login first!")
@@ -101,7 +101,7 @@ def score():
     return render_template("score.html", challenge=db.get_challenge())
 
 
-@app.route("/highscore")
+@application.route("/highscore")
 def highscore():
     user = db.get_user()
     user = dict(sorted(user.items(), key=lambda x: x[1]["score"], reverse=True))
@@ -110,5 +110,5 @@ def highscore():
 
 # needed when running the flask app via python app.py and not via flask run
 if __name__ == "__main__":
-    app.debug = True
-    app.run()
+    application.debug = True
+    application.run()
