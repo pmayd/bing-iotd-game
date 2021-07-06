@@ -123,9 +123,14 @@ def score_guesses(db=None):
     players_and_scores = sorted(db["challenge"][image_date]["player"].items(), key=lambda x: x[1]["distance"])
     
     score = 3
-    for username, _ in players_and_scores:
+    old_guess = players_and_scores[0][1]["guess"]
+    for username, (guess, distance) in players_and_scores:        
+        # in case two players have the same guess -> keep score
+        if guess != old_guess:
+            old_guess = guess
+            score = max(score - 1, 0)
+        
         db["challenge"][image_date]["player"][username].setdefault("score", score)
-        score = max(score -1, 0)
     
     db["challenge"][image_date]["status"] = "finished"
     
