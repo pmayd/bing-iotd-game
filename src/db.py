@@ -123,10 +123,10 @@ def score_guesses(db=None):
     
     score = 3
     old_guess = players_and_scores[0][1]["guess"]
-    for username, (guess, distance) in players_and_scores:        
+    for username, entry in players_and_scores:        
         # in case two players have the same guess -> keep score
-        if guess != old_guess:
-            old_guess = guess
+        if entry["guess"] != old_guess:
+            old_guess = entry["guess"]
             score = max(score - 1, 0)
         
         db["challenge"][image_date]["player"][username].setdefault("score", score)
