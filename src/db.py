@@ -97,6 +97,7 @@ def add_guess(username: str, user_country: str, db=None):
     """ Add user's first guess to today's challenge. """
     image_date = bing.get_image_date()
     image_country = bing.get_image_country()
+
     db["challenge"].setdefault(image_date, {})
     db["challenge"][image_date].setdefault("country", image_country)
     db["challenge"][image_date].setdefault("status", "open")

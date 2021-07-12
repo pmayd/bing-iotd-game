@@ -1,10 +1,10 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from geopy.geocoders import Nominatim
-from geopy.distance import geodesic
 
 import requests
+from geopy.distance import geodesic
+from geopy.geocoders import Nominatim
 
 BING_URL = "https://www.bing.com"
 BING_DAILY_IMAGE = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=de-de"
@@ -50,16 +50,21 @@ def get_image_date() -> str:
 def get_image_country() -> str:
     metadata = get_bing_daily_pic()
     copyright_parts = metadata["copyright"].split(",")
+    geolocator = Nominatim(user_agent="Bing IOTD Challenge")
 
-    country = ""
-    if len(copyright_parts) == 2:
-        country = copyright_parts[-1]
-    elif len(copyright_parts) > 2:
-        country = copyright_parts[-2]
-
+    # last part of copyright should always be a country, but with additional text in ()
+    country = copyright_parts.pop()
     if country.find("(") != -1:
         country = country[:country.find("(")].strip()
 
+    while True:
+        possible_geolocation = copyright_parts.pop()
+        
+        if not geolocator.geocode(possible_geolocation):
+            break
+        
+        country = possible_geolocation
+        
     return country
 
 
