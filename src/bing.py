@@ -59,7 +59,7 @@ def download_streetview_pic(pano_id: str):
     if response.status_code == 200:
         image_type = response.headers["Content-Type"].split("/")[1]
         image_file = Path(__file__).parent.parent.joinpath(
-            "data", "images", f"{pano_id}.{image_type}"
+            "static", "images", f"{pano_id}.{image_type}"
         )
         image_file.parent.mkdir(exist_ok=True, parents=True)
         with open(image_file, "wb") as fh:
@@ -68,7 +68,7 @@ def download_streetview_pic(pano_id: str):
 
 
 def get_image_path(pano_id: str) -> str:
-    image_base_dir = Path(__file__).parent.parent.joinpath("data", "images")
+    image_base_dir = Path(__file__).parent.parent.joinpath("static", "images")
     return str(
         next(image_base_dir.glob(f"{pano_id}.*")).relative_to(
             Path(__file__).parent.parent
