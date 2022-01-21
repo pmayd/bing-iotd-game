@@ -12,7 +12,7 @@ API_BASE_URL = "https://maps.googleapis.com/maps/api/streetview"
 METADATA_URL = API_BASE_URL + "/metadata"
 CACHE_DIR = "data/cache"
 API_KEY = os.getenv(
-    "GOOGLE_STREETVIEW_API_KEY", "AIzaSyDpkeGQzKGmXGGu364kQ6QTwDFuXkT5CTM"
+    "GOOGLE_STREETVIEW_API_KEY", ""
 )
 
 
