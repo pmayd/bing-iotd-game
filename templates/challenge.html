@@ -1,11 +1,11 @@
 {% extends 'base.html' %} {% block content %}
 
 <figure class="figure">
-    <img src='{{image_url}}' class="figure-img img-fluid rounded" alt="BIng Image of the Day">
-    <figcaption class="figure-caption text-end">Image for {{image_date}}: {{ image_author }}.</figcaption>
+    <img src='{{image_src}}' class="figure-img img-fluid rounded" alt="Image of the Day">
+    <figcaption class="figure-caption text-end">Image for {{image_date}}.</figcaption>
 </figure>
 {% if "player" in challenge and session.user in challenge.player %}
-    <p> You have already taken part in today's challenge. Your guess was <strong class="text-primary">{{ challenge["player"][session.user]["guess"] }}</strong>. {% if challenge.status == "finished" %}The correct solution is <strong class="text-primary">{{ challenge["country"] }}</strong>.{% endif %}</p>
+    <p> You have already taken part in today's challenge. Your guess was <strong class="text-primary">{{ challenge["player"][session.user]["guess"] }}</strong>. {% if challenge.status == "finished" %}The correct solution is <strong class="text-primary">{{ challenge["location"] }}</strong>.{% endif %}</p>
 {% else %}
 <form method="post">
     <div class="mb-3 row g-2">

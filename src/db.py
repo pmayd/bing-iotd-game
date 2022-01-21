@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 from functools import wraps
 from pathlib import Path
@@ -81,7 +82,7 @@ def add_user(username: str, score: int, db=None):
 @provide_db
 def update_player_score(db=None):
     """ Update all player scores with today's challenge score. """
-    image_date = bing.get_image_date()
+    image_date = datetime.today().strftime("%Y-%m-%d")
     if db["challenge"][image_date].get("status", "") == "finished":   
         player = db["challenge"][image_date]["player"]
         
@@ -95,17 +96,17 @@ def update_player_score(db=None):
 @provide_db
 def add_guess(username: str, user_country: str, db=None):
     """ Add user's first guess to today's challenge. """
-    image_date = bing.get_image_date()
-    image_country = bing.get_image_country()
+    image_date = datetime.today().strftime("%Y-%m-%d")
+    image_metadata = bing.get_random_streetview_pic()
 
     db["challenge"].setdefault(image_date, {})
-    db["challenge"][image_date].setdefault("country", image_country)
+    db["challenge"][image_date].setdefault("location", bing.get_image_location_name())
     db["challenge"][image_date].setdefault("status", "open")
     db["challenge"][image_date].setdefault("player", {})
     db["challenge"][image_date]["player"].setdefault(
         username, {
             "guess": user_country,
-            "distance": bing.score_guess(user_country, image_country)
+            "distance": bing.score_guess(user_country)
         })
 
     return db
@@ -119,7 +120,7 @@ def score_guesses(db=None):
     Second, the best three playes get scores 3,2,1
     Third, challenge's status is set to 'finished
     """
-    image_date = bing.get_image_date()
+    image_date = datetime.today().strftime("%Y-%m-%d")
     players_and_scores = sorted(db["challenge"][image_date]["player"].items(), key=lambda x: x[1]["distance"])
     
     score = 3
@@ -138,6 +139,6 @@ def score_guesses(db=None):
         
     
 @provide_db
-def get_challenge(image_date: str = bing.get_image_date(), db=None) -> dict:
+def get_challenge(image_date: str = datetime.today().strftime("%Y-%m-%d"), db=None) -> dict:
     """ Get the challenge for the given date. """
     return db["challenge"].get(image_date, {})
